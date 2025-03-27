@@ -1,0 +1,20 @@
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 3.1.2p20
+  NewCops: enable
+  Exclude:
+    - 'db/schema.rb' # Exclude schema changes from style checks
+    - 'node_modules/**/*' # Ignore node_modules for Tailwind or other assets
+
+Metrics/LineLength:
+  Max: 250 # Increase limit for Tailwind classes in views
+  IgnoredPatterns:
+    - 'http://' # Ignore long URLs (if present in code)
+
+Layout/LineLength:
+  Enabled: true
+  Max: 250
+  Exclude:
+    - 'app/views/**/*' # Disable line length checks in views for Tailwind

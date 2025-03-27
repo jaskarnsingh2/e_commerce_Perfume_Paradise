@@ -1,0 +1,11 @@
+<%= link_to product do %>
+  <div id="<%= dom_id product %>">
+    <%= image_tag product.images.first, class: "w-full h-80 object-cover rounded-lg hover:brightness-75 transition-all duration-250" if product.images.any? %>
+    
+    <!-- Product Name with Bold and Italic Text -->
+    <p class="text-lg text-black font-bold italic"> <%= product.name %> </p>
+    
+    <!-- Product Price with Bold and Italic Text -->
+    <p class="text-lg text-black font-bold italic"> <%= number_to_currency product.price %> </p>
+  </div>
+<% end %>

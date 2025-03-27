@@ -1,0 +1,32 @@
+<div class="h-16 w-full fixed top-0 bg-gray-900 z-50">
+  <div class="max-w-7xl h-full w-full mx-auto flex items-center justify-between px-8">
+    <%= link_to root_path, class: "flex items-end gap-4" do %>
+      <img class="w-10 object-cover" src="/assets/perfume%20store-d8c2980a724013ba1af78d93c8de7504befcf4951f80453951df843f08bdc928.png" alt="perfume store"/>
+      <span class="text-2xl text-gray-100 font-brokenbrush"> Perfume Paradise </span>
+    <% end %>
+
+    <!-- Navigation Links -->
+    <nav class="flex gap-6 text-gray-100">
+      <%= link_to "Home", root_path, class: "hover:text-white" %>
+      <%= link_to "About", about_path, class: "hover:text-white" %>
+      <%= link_to "Products", products_path, class: "hover:text-white" %>
+      <%= link_to "Categories", categories_path, class: "hover:text-white" %>
+
+      <% if user_signed_in? %>
+  <%= link_to "Profile", profile_path, class: "hover:text-white" %>
+  <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "hover:text-white" %>
+<% else %>
+  <%= link_to "Sign Up", new_user_registration_path, class: "hover:text-white" %>
+  <%= link_to "Log In", new_user_session_path, class: "hover:text-white" %>
+<% end %>
+
+
+    </nav>
+    <!-- Cart Link -->
+    <% if @current_cart.present? && @current_cart.secret_id.present? %>
+      <%= link_to cart_path(@current_cart.secret_id) do %>
+        <%= render "layouts/cart", cart: @current_cart %>
+      <% end %>
+    <% end %> <!-- Close the if block for the cart -->
+  </div>
+</div>

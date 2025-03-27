@@ -1,0 +1,43 @@
+<div class="w-full flex flex-col items-center">
+  <div class="flex justify-between w-full items-center">
+    <div class="flex flex-col gap-4">
+      <h1 class="text-5xl"> Your cart </h1>
+      <% if @current_cart.cart_items.any? %>
+        <p class="text-lg"> You have <%= @current_cart.cart_items.sum(:quantity) %> items in your cart </p>
+      <% else %>
+        <p class="text-lg"> You don't have any items in your cart yet </p>
+      <% end %>
+    </div>
+
+    <%= link_to "Checkout Now", checkout_cart_path(@current_cart.secret_id), 
+                class: "rounded-lg font-semibold p-4 text-center text-xl bg-yellow-400 hover:bg-yellow-500" %>
+  </div>
+
+  <br/>
+
+  <div id="products" class="min-w-full grid md:grid-cols-4 gap-8">
+    <% @current_cart.cart_items.each do |cart_item| %>
+      <div class="flex flex-col items-center border p-4 rounded-lg shadow-md" id="cart-item-<%= cart_item.id %>">
+        <h2 class="text-xl font-semibold"><%= cart_item.product.name %></h2>
+        <p class="text-gray-600">Price: $<%= cart_item.product.price %></p>
+        <p class="text-gray-600">Total: $<%= cart_item.quantity * cart_item.product.price %></p>
+
+        <!-- Update Quantity Form -->
+        <%= form_with model: cart_item, url: update_cart_item_cart_path(@current_cart, cart_item), method: :patch, remote: true, local: false do |f| %>
+  <div class="flex items-center gap-4 mt-2">
+    <%= f.label :quantity, "Quantity", class: "font-medium" %>
+    <%= f.number_field :quantity, value: cart_item.quantity, min: 1, step: 1, class: "border rounded-lg px-2 py-1 w-16" %>
+    <%= f.submit "Update", class: "bg-green-500 text-white p-2 rounded-lg hover:bg-green-600" %>
+  </div>
+<% end %>
+
+
+        <br/>
+
+        <%= link_to "Remove from cart", cart_path(@current_cart.secret_id, product_id: cart_item.product.id), 
+                    class: "p-2 rounded-lg bg-red-500 text-white hover:bg-red-600",
+                    data: { turbo_method: "delete" } %>
+      </div>
+    <% end %>
+  </div>
+</div>

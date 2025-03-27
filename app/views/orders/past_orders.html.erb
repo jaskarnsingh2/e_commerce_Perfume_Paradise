@@ -1,0 +1,27 @@
+<!-- app/views/orders/past_orders.html.erb -->
+<h1>Your Past Orders</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Total</th>
+      <th>Tax</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @orders.each do |order| %>
+      <tr>
+        <td><%= order.id %></td>
+        <td><%= number_to_currency(order.grand_total) %></td>
+        <td><%= number_to_currency(order.tax_total) %></td>
+        <td><%= order.status %></td>
+        <td>
+          <%= link_to "View", order_path(order) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

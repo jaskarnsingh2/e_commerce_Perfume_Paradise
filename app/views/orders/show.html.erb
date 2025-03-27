@@ -1,0 +1,36 @@
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+  <!-- Order Heading -->
+  <h1 class="text-2xl font-semibold text-gray-800 mb-4">Order #<%= @order.id %></h1>
+
+  <!-- Order Total, Tax, Status -->
+  <div class="mb-6">
+    <p class="text-lg text-gray-600"><strong>Total:</strong> <%= number_to_currency(@order.grand_total) %></p>
+    <p class="text-lg text-gray-600"><strong>Tax:</strong> <%= number_to_currency(@order.tax_total) %></p>
+    <p class="text-lg text-gray-600"><strong>Status:</strong> <%= @order.status.capitalize %></p>
+  </div>
+
+  <!-- Order Items Section -->
+  <h3 class="text-xl font-medium text-gray-700 mb-4">Order Items</h3>
+
+  <!-- Table for Order Items -->
+  <div class="overflow-x-auto shadow-lg rounded-lg">
+    <table class="min-w-full table-auto border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Product Name</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Quantity</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @order.order_items.each do |item| %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-2 text-sm text-gray-700"><%= item.product.name %></td>
+            <td class="px-4 py-2 text-sm text-gray-700"><%= item.quantity %></td>
+            <td class="px-4 py-2 text-sm text-gray-700"><%= number_to_currency(item.price) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

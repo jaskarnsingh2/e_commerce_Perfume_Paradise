@@ -1,0 +1,28 @@
+<h1 class="text-3xl font-semibold text-black-500 mb-6 text-center w-full max-w-4xl mx-auto">Edit About Page</h1>
+
+<%= form_with(model: @about_page, url: admin_about_path, method: :patch) do |form| %>
+  <div class="field">
+    <%= form.label :content, "About Page Content" %>
+    <%= form.rich_text_area :content %>
+<h1 class="text-3xl font-semibold text-black-500 mb-6 text-center w-full max-w-4xl mx-auto">Edit About Page</h1>
+<%= form_with model: @page, url: admin_about_path, method: :patch, class: "contents" do |f| %>
+<% if @page.errors.any? %>
+  <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <h2><%= pluralize(@page.errors.count, "error") %> prohibited this page from being saved:</h2>
+    <ul>
+      <% @page.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+  <%= form.submit "Update Page", class: "btn btn-primary" %>
+<% end %>
+
+<div class="my-5">
+  <%= f.label :content, class: "block text-gray-700 font-medium" %>
+  <%= f.rich_text_area :content, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full bg-gray-100" %>
+</div>
+<div class="inline">
+  <%= f.submit "Save Changes", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+</div>
+<% end %>

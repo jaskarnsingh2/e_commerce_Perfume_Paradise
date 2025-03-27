@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+
+@layer components {
+  .btn-primary {
+    @apply py-2 px-4 bg-blue-200;
+  }
+}
+
+*/
+
+@layer components {
+  @font-face {
+    font-family: "Brokenbrush";
+    src: url("/fonts/Brokenbrush.ttf");
+  }
+
+  @font-face {
+    font-family: "Qalbite";
+    src: url("/fonts/Qalbite.otf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.125rem; /* Larger text */
+}
+.pagination li {
+  margin-right: 10px; /* Adds space between pagination numbers */
+}
+
+.pagination li:last-child {
+  margin-right: 0; /* Removes margin from the last pagination item */
+}
+
+
+@import 'actiontext.css';

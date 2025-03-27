@@ -1,0 +1,20 @@
+<div class="w-full min-h-[100vh] pt-24">
+  <div class="max-w-xl w-full mx-auto shadow-lg bg-gray-200 rounded-lg py-8">
+    <h2 class="text-xl mb-4 text-center">My Profile</h2>
+
+    <div class="w-3/4 mx-auto">
+      <p><strong>Email:</strong> <%= current_user.email %></p>
+
+      <!-- Address Details -->
+      <p><strong>Address:</strong> <%= current_user.address %></p>
+      <p><strong>City:</strong> <%= current_user.city %></p>
+      <p><strong>State:</strong> <%= current_user.state %></p>
+      <p><strong>Province:</strong> <%= current_user.province %></p>
+      <p><strong>Zip Code:</strong> <%= current_user.zip_code %></p>
+
+      <div class="mt-4">
+        <%= link_to "Edit Profile", edit_user_registration_path, class: "bg-blue-500 p-2 text-white rounded-lg" %>
+      </div>
+    </div>
+  </div>
+</div>

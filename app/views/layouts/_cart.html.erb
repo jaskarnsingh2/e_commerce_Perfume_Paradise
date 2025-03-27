@@ -1,0 +1,8 @@
+<div class="relative" id="cart">
+<img class="w-10 object-cover invert" src="/assets/cart-bcfec8f650b3fc7a46c1549f8b3eca736ea0748a6206972bcd7d1f23dda06877.png" alt="Shopping cart icon" />
+  <% if cart && cart.cart_items.any? %>
+    <div class="absolute top-0 -right-1 bg-purple-500 px-1.5 text-sm text-white rounded-lg"> 
+      <%= @current_cart.cart_items.sum(:quantity) %>
+    </div>
+  <% end %>
+</div>

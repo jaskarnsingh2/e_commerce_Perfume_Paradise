@@ -1,0 +1,17 @@
+<div class="grid md:grid-cols-2 gap-8">
+  <div class="w-full flex flex-col items-start md:pt-8">
+    <h1 class="text-5xl font-brokenbrush text-indigo-900 text-center mb-4"> <%= @product.name %> </h1>
+    
+    <div class="max-w-2xl w-full flex justify-start mb-4"> 
+      <%= image_tag(@product.images.first, class: "w-full h-auto object-contain rounded-lg") if @product.images.any? %>
+    </div>
+
+    <div class="text-gray-100 text-lg text-center mt-4 max-w-2xl w-full">
+      <%= @product.description %>
+    </div>
+  </div>
+
+  <div data-controller="stripe-checkout" data-stripe-checkout-url-value="<%= product_buy_now_path(@product) %>" class="flex flex-col justify-start">
+  
+  </div>
+</div>

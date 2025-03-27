@@ -1,0 +1,33 @@
+<!-- Parent Container -->
+<div class="w-full">
+
+  <!-- Search Form Row -->
+  <div class="bg-gray-100 py-4 flex justify-center">
+    <%= form_with url: products_path, method: :get, class: 'flex items-center gap-2' do |f| %>
+      <%= f.text_field :search, value: params[:search], placeholder: "Search products", class: 'p-2 rounded-md text-gray-700 w-64' %> <!-- Adjust width -->
+      <%= f.select :category_id, options_for_select(Category.all.map { |c| [c.name, c.id] }, params[:category_id]), include_blank: "All Categories", class: 'p-2 rounded-md text-gray-700 w-48' %> <!-- Adjust width -->
+      <%= f.submit 'Search', class: 'p-2 bg-blue-500 text-white rounded-md' %>
+    <% end %>
+  </div>
+
+  <!-- Hero Section Row -->
+  <div class="bg-pink-100 py-16">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+      <!-- Text Section -->
+      <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
+        <p class="text-sm font-medium text-gray-600">Spring Collection</p>
+        <h1 class="text-4xl font-bold text-gray-900 leading-tight mt-2">
+          A true perfume is a journey through nature, captured in a bottle of art.
+        </h1>
+        <p class="text-gray-600 mt-4">EXPLORE OUR STORE</p>
+        <%= link_to "SHOP NOW", products_path, class: "mt-4 inline-block px-6 py-3 bg-red-500 text-white font-semibold rounded-md shadow-lg hover:bg-red-600 transition duration-300" %>
+      </div>
+      
+      <!-- Image Section -->
+      <div class="md:w-1/2 flex justify-center">
+        <%= image_tag "home.jpg", alt: "Perfume bottle with flowers", class: "w-full h-auto max-w-sm md:max-w-lg fade-border" %>
+      </div>
+    </div>
+  </div>
+
+</div>
