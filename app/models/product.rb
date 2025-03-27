@@ -7,10 +7,15 @@ class Product < ApplicationRecord
   has_many :order_items
   has_many :orders, through: :order_items
 
-# Define the associations that should be searchable
-def self.ransackable_associations(auth_object = nil)
-  ["cart_items", "category", "images_attachments", "images_blobs", "order_items", "orders", "rich_text_description"]
-end
+    # Explicitly list all searchable attributes
+    def self.ransackable_attributes(auth_object = nil)
+      %w[id name price quantity on_sale created_at updated_at category_id]
+    end
+  
+    # Explicitly list all searchable associations
+    def self.ransackable_associations(auth_object = nil)
+      %w[category cart_items order_items orders]
+    end
 
   # Include PgSearch for full-text search
   include PgSearch::Model

@@ -1,6 +1,13 @@
 ActiveAdmin.register Product do
   permit_params :name, :description, :price, :category_id, images: []
 
+  # Only declare filters you actually want to use
+  filter :name
+  filter :category
+  filter :price
+  filter :on_sale
+  filter :created_at
+
   index do
     selectable_column
     id_column
@@ -9,10 +16,8 @@ ActiveAdmin.register Product do
     column :price
     column :category
     column "Images" do |product|
-      # Iterate through each attached image and display them
       if product.images.attached?
         product.images.each do |image|
-          # Display each image with a thumbnail
           image_tag image.variant(resize: "100x100").processed, alt: product.name
         end
       else

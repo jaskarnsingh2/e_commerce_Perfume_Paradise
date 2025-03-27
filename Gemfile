@@ -78,3 +78,6 @@ gem "stripe", "~> 13.1"
 
 gem 'activeadmin'
 gem 'sassc-rails'
+gem 'ransack'
+gem 'image_processing', '~> 1.2'
+gem 'mini_magick'
