@@ -6,6 +6,12 @@ class ProductsController < ApplicationController
   def index
     @categories = Category.all
     @products = Product.all
+    
+
+    # Add logging to check images
+  @products.each do |product|
+    Rails.logger.debug "Product #{product.id}: Images count = #{product.images.count}"
+  end
   
     # Apply filter based on params
     if params[:filter] == 'on_sale'

@@ -17,9 +17,16 @@ ActiveAdmin.register Product do
     column :category
     column "Images" do |product|
       if product.images.attached?
-        product.images.each do |image|
-          image_tag image.variant(resize: "100x100").processed, alt: product.name
-        end
+        product.images.map do |image|
+          begin
+            image_tag image.variant(resize_to_limit: [100, 100]), 
+                      alt: product.name, 
+                      class: 'admin-product-thumbnail'
+          rescue StandardError => e
+            Rails.logger.error "Image processing error: #{e.message}"
+            "Error processing image"
+          end
+        end.compact.join.html_safe
       else
         "No images available"
       end

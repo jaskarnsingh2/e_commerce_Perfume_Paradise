@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :set_current_cart
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  helper_method :current_admin
   protected
 
   def check_admin_priv
@@ -9,7 +10,9 @@ class ApplicationController < ActionController::Base
       redirect_to root_path
     end
   end
-
+  def current_admin
+    current_admin_user # Map `current_admin` to `current_admin_user`
+  end
   private
   
   def set_current_cart
