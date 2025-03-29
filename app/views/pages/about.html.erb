@@ -1,31 +1,15 @@
 <div class="bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto mt-8">
   <!-- Business Overview Section -->
-  <h1 class="text-3xl font-bold text-center mb-6">About Perfume Paradise</h1>
+  <h1 class="text-3xl font-bold text-center mb-6"><%= @page.title %></h1>
   
   <p class="text-lg text-gray-700 mb-4">
-    Perfume Paradise is a boutique perfume retailer based in Winnipeg, Manitoba, specializing in a wide range of high-quality fragrances for both men and women. 
-    With a dedicated team of 10 employees, Perfume Paradise has been operational for over 5 years, building a loyal customer base through personalized service and expert fragrance advice. 
-    Our physical store, located in a popular shopping district, allows customers to experience the world of fragrance firsthand. Additionally, we participate in local markets and events to bring our unique offerings to a wider audience.
-  </p>
-
-  <!-- Products Offered Section -->
-  <h2 class="text-2xl font-semibold mb-4">Products Offered</h2>
-  <p class="text-lg text-gray-700 mb-4">
-    Perfume Paradise is expanding its reach by establishing an online store, offering a curated selection of perfumes including designer brands, niche fragrances, and custom blends. 
-    Our online store will feature detailed product descriptions, customer reviews, and personalized recommendations based on your fragrance preferences.
-  </p>
-
-  <!-- Target Demographic Section -->
-  <h2 class="text-2xl font-semibold mb-4">Target Demographic</h2>
-  <p class="text-lg text-gray-700 mb-6">
-    Our target demographic includes both men and women aged 18-45 who appreciate high-quality fragrances and seek unique scent options. 
-    They value personal expression through fragrance and are likely to purchase online for convenience and exclusivity.
+    <%= @page.content.html_safe %>
   </p>
 
   <!-- Admin Edit Link -->
   <% if current_admin %>
   <div class="w-full flex justify-center items-center mt-16 gap-4">
-    <%= link_to "Edit this page", edit_admin_about_path, class: "rounded-lg py-3 px-5 bg-gray-300 inline-block font-medium" %>
+    <%= link_to "Edit this page", edit_admin_page_path(@page), class: "rounded-lg py-3 px-5 bg-gray-300 inline-block font-medium" %>
   </div>
   <% end %>
 </div>

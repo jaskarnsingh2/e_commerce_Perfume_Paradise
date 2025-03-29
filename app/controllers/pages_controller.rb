@@ -1,13 +1,9 @@
 class PagesController < ApplicationController
-    def show
-      # This can remain for other potential dynamic page rendering
-    end
-  
-    def about
-      # This will explicitly render the about page
-       render 'about'
-    end
-    def contact
-        # This action will render the Contact page
-      end
+  def about
+    @page = Page.find_by(slug: 'about') || Page.new(title: "About Perfume Paradise", content: "Default About Page Content")
   end
+
+  def contact
+    @contact_info = ContactInfo.first || ContactInfo.new(email: "perfumeparadise@paradise.ca", phone: "(204) 555-SCENT")
+  end
+end
