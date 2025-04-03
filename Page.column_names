@@ -1,0 +1,9 @@
+=> 
+[32m#<Page:0x00007fccbdb0ee60[0m
+ id: [34m[1m3[0m,
+ title: [31m[1m"[0m[31mContact Perfume Paradise[0m[31m[1m"[0m,
+ content:
+  [31m[1m"[0m[31mLocation: Red River College, 160 Princess Street, ...[0m[31m[1m"[0m,
+ created_at: [31m[1m"[0m[31m2025-04-03 02:59:36.657508000 +0000[0m[31m[1m"[0m,
+ updated_at: [31m[1m"[0m[31m2025-04-03 02:59:36.657508000 +0000[0m[31m[1m"[0m,
+ slug: [31m[1m"[0m[31mcontact[0m[31m[1m"[0m[32m>[0m

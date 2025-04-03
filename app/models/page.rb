@@ -1,8 +1,10 @@
 class Page < ApplicationRecord
-    has_rich_text :content
   
+  def self.ransackable_attributes(auth_object = nil)
+    ["content", "created_at", "id", "id_value", "slug", "title", "updated_at"]
+  end
 
-    validates :slug, uniqueness: true
-  validates :title, :content, presence: true
+  validates :title, presence: true
+  validates :content, presence: true
   end
   

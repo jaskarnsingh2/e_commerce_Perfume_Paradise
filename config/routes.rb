@@ -49,6 +49,9 @@
 #   root "home#index"
 # end
 Rails.application.routes.draw do
+  get '/about', to: 'pages#show', defaults: { slug: 'about' }
+  get '/contact', to: 'pages#show', defaults: { slug: 'contact' }
+
   # Devise authentication for admin users
   devise_for :admin_users, ActiveAdmin::Devise.config
   
@@ -110,8 +113,8 @@ Rails.application.routes.draw do
 
    # Root path
    root "home#index"
-   get '/about', to: 'pages#about', as: 'about'
-   get 'contact', to: 'pages#contact'
+  #  get '/about', to: 'pages#about', as: 'about'
+  #  get 'contact', to: 'pages#contact'
 
 
 end
