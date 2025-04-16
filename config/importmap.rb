@@ -12,3 +12,4 @@ pin "@rails/request.js", to: "@rails--request.js.js" # @0.0.11
 pin "jquery", to: "https://ga.jspm.io/npm:jquery@3.7.1/dist/jquery.js"
 pin "jquery_ujs", to: "https://cdn.jsdelivr.net/npm/jquery-ujs@1.2.3/src/rails.js"
 pin "active_admin", to: "active_admin.js"
+pin "stripe", to: "https://js.stripe.com/v3/"

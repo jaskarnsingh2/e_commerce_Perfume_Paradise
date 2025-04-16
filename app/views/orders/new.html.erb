@@ -1,0 +1,39 @@
+<h1 class="text-3xl font-bold mb-6">Checkout</h1>
+
+<% if @cart.cart_items.any? %>
+  <%= form_with url: orders_path, method: :post do |f| %>
+    
+    <!-- Address Inputs -->
+    <div class="mb-4">
+      <%= label_tag :address, "Shipping Address", class: "block font-medium" %>
+      <%= text_field_tag :address, nil, class: "border rounded w-full p-2" %>
+    </div>
+
+    <div class="mb-4">
+      <%= label_tag :province_id, "Province", class: "block font-medium" %>
+      <%= collection_select(:order, :province_id, Province.all, :id, :name, {}, class: "border rounded w-full p-2") %>
+    </div>
+
+    <!-- Invoice Summary -->
+    <h2 class="text-xl font-semibold mt-6 mb-2">Invoice Summary</h2>
+    <ul class="mb-4">
+      <% subtotal = @cart.cart_items.sum { |item| item.product.price * item.quantity } %>
+      <% pst = @province&.pst || 0 %>
+      <% gst = @province&.gst || 0 %>
+      <% hst = @province&.hst || 0 %>
+      <% total_tax = subtotal * (pst + gst + hst) %>
+      <% total = subtotal + total_tax %>
+
+      <li>Subtotal: $<%= '%.2f' % subtotal %></li>
+      <li>PST: $<%= '%.2f' % (subtotal * pst) %></li>
+      <li>GST: $<%= '%.2f' % (subtotal * gst) %></li>
+      <li>HST: $<%= '%.2f' % (subtotal * hst) %></li>
+      <li><strong>Total: $<%= '%.2f' % total %></strong></li>
+    </ul>
+
+    <%= f.submit "Place Order", class: "bg-blue-600 text-white p-3 rounded hover:bg-blue-700" %>
+
+  <% end %>
+<% else %>
+  <p>Your cart is empty.</p>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_29_153945) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -161,6 +161,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_29_153945) do
     t.boolean "on_sale", default: false
     t.text "description"
     t.integer "quantity", default: 0, null: false
+    t.decimal "sale_price", precision: 10, scale: 2
+    t.integer "discount_percentage", default: 0
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 

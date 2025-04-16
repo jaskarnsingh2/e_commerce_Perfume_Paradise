@@ -1,19 +1,245 @@
-<div class="w-full grid md:grid-cols-2">
-  <div class="w-full flex flex-col items-center md:pt-8">
-    <h1 class="text-5xl font-broken text-indigo-900 text-center"> Your Cart </h1>
-    <p> You have <%= @current_cart.cart_items.sum(:quantity) %> products in your cart </p>
-    <div class="mx-auto flex flex-col gap-2"> 
-      <% @current_cart.cart_items.each.with_index do |cart_item, index| %>
-        <div class="flex gap-2 bg-gray-700/75 p-2">
-          <span class="px-2 rounded-full bg-gray-500 text-gray-100"> <%= index + 1 %> </span>
-          <p class="text-indigo-100"> <%= cart_item.product.name %> </p>
-          <p class="text-green-500"> <%= number_to_currency cart_item.product.price * cart_item.quantity %> </p>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Complete Your Order</h1>
+  
+  <div class="bg-white shadow-md rounded p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+    
+    <div class="space-y-4">
+      <% @current_cart.cart_items.each do |cart_item| %>
+        <div class="flex justify-between items-center border-b pb-3">
+          <div>
+            <p class="font-medium"><%= cart_item.product.name %></p>
+            <p class="text-gray-600">Quantity: <%= cart_item.quantity %></p>
+          </div>
+          <p class="font-medium">$<%= (cart_item.product.price * cart_item.quantity).round(2) %></p>
         </div>
       <% end %>
+      
+      <% 
+  subtotal = @current_cart.cart_items.sum { |item| item.product.price * item.quantity }
+  
+  # Default tax rates
+  gst_rate = 0.05  # 5% GST
+  
+  # Use current_user instead of @customer
+  pst_rate = current_user.province == "BC" ? 0.07 : 0  # Example: 7% PST in BC
+  hst_rate = current_user.province == "ON" ? 0.13 : 0  # Example: 13% HST in Ontario
+  
+  gst = subtotal * gst_rate
+  pst = subtotal * pst_rate
+  hst = subtotal * hst_rate
+  
+  total_tax = gst + pst + hst
+  total = subtotal + total_tax
+%>
+      
+      <!-- Display tax breakdown -->
+      <div class="space-y-2 pt-2">
+        <div class="flex justify-between">
+          <p>Subtotal:</p>
+          <p>$<%= subtotal.round(2) %></p>
+        </div>
+        
+        <% if gst > 0 %>
+        <div class="flex justify-between">
+          <p>GST (5%):</p>
+          <p>$<%= gst.round(2) %></p>
+        </div>
+        <% end %>
+        
+        <% if pst > 0 %>
+        <div class="flex justify-between">
+          <p>PST (<%= (pst_rate * 100).to_i %>%):</p>
+          <p>$<%= pst.round(2) %></p>
+        </div>
+        <% end %>
+        
+        <% if hst > 0 %>
+        <div class="flex justify-between">
+          <p>HST (<%= (hst_rate * 100).to_i %>%):</p>
+          <p>$<%= hst.round(2) %></p>
+        </div>
+        <% end %>
+      </div>
+      
+      <div class="flex justify-between items-center pt-3 font-bold">
+        <p>Total:</p>
+        <p>$<%= total.round(2) %></p>
+      </div>
     </div>
   </div>
-
-  <div data-controller="stripe-checkout" data-stripe-checkout-url-value="<%= stripe_session_cart_path(@current_cart.secret_id) %>"> 
-
+  
+  <!-- Customer Address Form -->
+<% if !current_user.address? || !current_user.province? %>
+<div class="bg-white shadow-md rounded p-6 mb-8">
+  <h2 class="text-xl font-semibold mb-4">Shipping Address</h2>
+  
+  <%= form_with model: current_user, url: update_user_path, method: :patch, id: "address-form", class: "space-y-4" do |f| %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= f.label :name, class: "block text-gray-700 mb-1" %>
+        <%= f.text_field :name, class: "w-full border rounded-lg px-3 py-2", required: true %>
+      </div>
+      
+      <div>
+        <%= f.label :email, class: "block text-gray-700 mb-1" %>
+        <%= f.email_field :email, class: "w-full border rounded-lg px-3 py-2", required: true %>
+      </div>
+      
+      <div class="md:col-span-2">
+        <%= f.label :address, class: "block text-gray-700 mb-1" %>
+        <%= f.text_field :address, class: "w-full border rounded-lg px-3 py-2", required: true %>
+      </div>
+      
+      <div>
+        <%= f.label :city, class: "block text-gray-700 mb-1" %>
+        <%= f.text_field :city, class: "w-full border rounded-lg px-3 py-2", required: true %>
+      </div>
+      
+      <div>
+        <%= f.label :province, class: "block text-gray-700 mb-1" %>
+        <%= f.select :province, 
+           [["Alberta", "AB"], ["British Columbia", "BC"], ["Manitoba", "MB"], 
+            ["New Brunswick", "NB"], ["Newfoundland and Labrador", "NL"], 
+            ["Northwest Territories", "NT"], ["Nova Scotia", "NS"], ["Nunavut", "NU"], 
+            ["Ontario", "ON"], ["Prince Edward Island", "PE"], ["Quebec", "QC"], 
+            ["Saskatchewan", "SK"], ["Yukon", "YT"]], 
+           { include_blank: "Select Province" }, 
+           { class: "w-full border rounded-lg px-3 py-2", required: true } %>
+      </div>
+      
+      <div>
+        <%= f.label :zip_code, class: "block text-gray-700 mb-1" %>
+        <%= f.text_field :zip_code, class: "w-full border rounded-lg px-3 py-2", required: true, pattern: "[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]", 
+                         title: "Please enter a valid Canadian postal code (e.g. A1A 1A1)" %>
+      </div>
+    </div>
+    
+    <%= f.submit "Save Address", class: "mt-4 py-2 px-4 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600" %>
+  <% end %>
+</div>
+<% end %>
+  
+  <!-- Payment Form -->
+  <div class="bg-white shadow-md rounded p-6">
+    <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+    
+    <div id="payment-form" class="space-y-4">
+      <!-- Stripe Elements will be inserted here -->
+      <div id="payment-element"></div>
+      
+      <div id="payment-error" class="text-red-500 hidden"></div>
+      
+      <button id="submit-payment" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
+        Pay Now
+      </button>
+    </div>
   </div>
 </div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Stripe
+    const stripe = Stripe('<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>');
+    let elements;
+    
+    // Initialize customer address form submission, if it exists
+    const addressForm = document.getElementById('address-form');
+    if (addressForm) {
+      addressForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Submit the address form via AJAX
+        const formData = new FormData(addressForm);
+        
+        fetch(addressForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Hide the address form after successful submission
+            addressForm.parentElement.classList.add('hidden');
+            initializePayment();
+          } else {
+            alert('Error saving address: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    } else {
+      // No address form needed, initialize payment directly
+      initializePayment();
+    }
+    
+    function initializePayment() {
+      // Get the client secret from your server
+      fetch('<%= stripe_session_cart_path(@current_cart.secret_id) %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const { clientSecret } = data;
+        
+        // Create payment elements
+        elements = stripe.elements({ clientSecret });
+        const paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+        
+        // Handle form submission
+        document.getElementById('submit-payment').addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          // Disable the submit button to prevent multiple clicks
+          document.getElementById('submit-payment').disabled = true;
+          document.getElementById('submit-payment').textContent = 'Processing...';
+          
+          try {
+            // Confirm payment
+            const { error } = await stripe.confirmPayment({
+              elements,
+              confirmParams: {
+                return_url: '<%= success_cart_url(@current_cart.secret_id) %>',
+              },
+            });
+            
+            if (error) {
+              const errorDiv = document.getElementById('payment-error');
+              errorDiv.textContent = error.message;
+              errorDiv.classList.remove('hidden');
+              
+              document.getElementById('submit-payment').disabled = false;
+              document.getElementById('submit-payment').textContent = 'Pay Now';
+            }
+          } catch (err) {
+            console.error('Payment error:', err);
+            
+            const errorDiv = document.getElementById('payment-error');
+            errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+            
+            document.getElementById('submit-payment').disabled = false;
+            document.getElementById('submit-payment').textContent = 'Pay Now';
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching payment intent:', error);
+        
+        const errorDiv = document.getElementById('payment-error');
+        errorDiv.textContent = 'Could not initialize payment. Please try again.';
+        errorDiv.classList.remove('hidden');
+      });
+    }
+  });
+</script>

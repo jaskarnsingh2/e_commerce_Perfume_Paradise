@@ -83,26 +83,44 @@ Rails.application.routes.draw do
    end
 
    # Resources
-   resources :orders, only: [:show] do
-     collection do
-       get :past_orders
-     end
-   end
+   resources :orders, only: [:new, :create, :show] do
+    collection do
+      get :past_orders
+    end
+  end
+  
 
    resources :products do
      resource :buy_now, only: [:show, :create], controller: :buy_now do
        get "success", on: :collection
      end
    end
+  #  resources :carts, only: [:show, :create] do
+  #   member do
+  #     get 'checkout'
+  #   end
+  
+  #   # Remove this line, as it's looking for the CartItemsController
+  #   # resources :cart_items, only: [:update], param: :id
+    
+  #   # Custom update route that points to the CartsController
+  #   patch 'cart_items/:id', to: 'carts#update_cart_item', as: 'update_cart_cart_item'
+  #   delete 'remove_item/:product_id', to: 'carts#destroy', as: 'remove_item'
+    
+  # end
+  resources :carts, param: :secret_id do
+    member do
+      get 'checkout', to: 'carts#checkout', as: 'checkout'
+      patch 'update_cart_item/:id', to: 'carts#update_cart_item', as: 'update_cart'
+      delete 'remove_item/:product_id', to: 'carts#destroy', as: 'remove_item'
+          # Add the stripe session route
+    post 'stripe_session', to: 'carts#stripe_session', as: 'stripe_session'
+    get 'success', to: 'carts#success', as: 'success'
+    patch 'update_user', to: 'users#update', as: 'update_user'
 
-   resources :cart_items, only: [:update]
-
-   resources :carts, only: [:create, :show, :destroy] do
-     patch 'update_cart_item/:id', on: :member, to: 'carts#update_cart_item', as: 'update_cart_item'
-     get "checkout", on: :member, to: "carts#checkout"
-     post "stripe_session", on: :member, to: "carts#stripe_session"
-     get "success", on: :member, to: "carts#success"
-   end
+    end
+  end
+  resources :orders, only: [:new, :create]
 
    resource :admin, only: [:show], controller: :admin
 
