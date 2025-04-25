@@ -9,8 +9,8 @@
       <% end %>
     </div>
 
-    <%= link_to "Checkout Now", checkout_cart_path(@current_cart.secret_id),
-        class: "rounded-lg font-semibold p-4 text-center text-xl bg-yellow-400 hover:bg-yellow-500" %>
+    <%= button_to 'Checkout Now', new_order_path, method: :get, class: 'btn btn-primary' %>
+
 
   </div>
 

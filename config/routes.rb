@@ -88,7 +88,8 @@ Rails.application.routes.draw do
       get :past_orders
     end
   end
-  
+  get 'orders/:id/payment', to: 'payments#show', as: 'payment_page'
+post 'orders/:id/process_payment', to: 'payments#process_payment', as: 'process_payment'
 
    resources :products do
      resource :buy_now, only: [:show, :create], controller: :buy_now do
@@ -120,7 +121,13 @@ Rails.application.routes.draw do
 
     end
   end
-  resources :orders, only: [:new, :create]
+ 
+  
+# config/routes.rb
+get 'provinces/:id/tax_rates', to: 'provinces#tax_rates'
+
+
+
 
    resource :admin, only: [:show], controller: :admin
 

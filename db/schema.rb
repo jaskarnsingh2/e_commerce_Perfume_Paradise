@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_24_132710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -121,6 +121,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "customers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "address"
+    t.string "city"
+    t.string "zip_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_customers_on_user_id"
+  end
+
   create_table "order_items", force: :cascade do |t|
     t.bigint "order_id", null: false
     t.bigint "product_id", null: false
@@ -141,6 +151,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "province_id"
+    t.decimal "shipping_cost"
+    t.string "address"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -171,6 +184,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
     t.string "abbreviation", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "pst"
+    t.decimal "gst"
+    t.decimal "hst"
   end
 
   create_table "users", force: :cascade do |t|
@@ -197,6 +213,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_03_043020) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "customers", "users"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "users"

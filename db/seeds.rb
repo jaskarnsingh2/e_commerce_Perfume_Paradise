@@ -3,21 +3,31 @@ require 'uri'
 require 'open-uri'
 require 'faker'
 
-Province.create([
-  { name: "Ontario", abbreviation: "ON" },
-  { name: "British Columbia", abbreviation: "BC" },
-  { name: "Quebec", abbreviation: "QC" },
-  { name: "Alberta", abbreviation: "AB" },
-  { name: "Manitoba", abbreviation: "MB" },
-  { name: "Saskatchewan", abbreviation: "SK" },
-  { name: "Nova Scotia", abbreviation: "NS" },
-  { name: "New Brunswick", abbreviation: "NB" },
-  { name: "Prince Edward Island", abbreviation: "PE" },
-  { name: "Newfoundland and Labrador", abbreviation: "NL" },
-  { name: "Northwest Territories", abbreviation: "NT" },
-  { name: "Yukon", abbreviation: "YT" },
-  { name: "Nunavut", abbreviation: "NU" }
-])
+# Create provinces with their tax rates
+provinces_data = [
+  { name: "Alberta", abbreviation: "AB", gst: 5.0, pst: 0.0, hst: 0.0 },
+  { name: "British Columbia", abbreviation: "BC", gst: 5.0, pste: 7.0, hst: 0.0 },
+  { name: "Manitoba", abbreviation: "MB", gst_rate: 5.0, pst_rate: 7.0, hst_rate: 0.0 },
+  { name: "New Brunswick", abbreviation: "NB", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 15.0 },
+  { name: "Newfoundland and Labrador", abbreviation: "NL", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 15.0 },
+  { name: "Northwest Territories", abbreviation: "NT", gst_rate: 5.0, pst_rate: 0.0, hst_rate: 0.0 },
+  { name: "Nova Scotia", abbreviation: "NS", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 15.0 },
+  { name: "Nunavut", abbreviation: "NU", gst_rate: 5.0, pst_rate: 0.0, hst_rate: 0.0 },
+  { name: "Ontario", abbreviation: "ON", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 13.0 },
+  { name: "Prince Edward Island", abbreviation: "PE", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 15.0 },
+  { name: "Quebec", abbreviation: "QC", gst_rate: 5.0, pst_rate: 9.975, hst_rate: 0.0 },
+  { name: "Saskatchewan", abbreviation: "SK", gst_rate: 5.0, pst_rate: 6.0, hst_rate: 0.0 },
+  { name: "Yukon", abbreviation: "YT", gst_rate: 5.0, pst_rate: 0.0, hst_rate: 0.0 }
+]
+
+provinces_data.each do |province_data|
+  Province.find_or_create_by!(name: province_data[:name]) do |province|
+    province.abbreviation = province_data[:abbreviation]
+    province.gst_rate = province_data[:gst_rate]
+    province.pst_rate = province_data[:pst_rate]
+    province.hst_rate = province_data[:hst_rate]
+  end
+end
 
 
 API_KEY = 'SWS5V1NFBdXIrTVgyQej7hId696CgbnlvmQmvtZq7Ef7ZwmTs646GaIF'

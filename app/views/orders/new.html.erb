@@ -1,39 +1,100 @@
-<h1 class="text-3xl font-bold mb-6">Checkout</h1>
-
-<% if @cart.cart_items.any? %>
-  <%= form_with url: orders_path, method: :post do |f| %>
+<div data-controller="tax-calculation">
+  <%= form_with model: @order, 
+  url: orders_path, 
+  method: :post, 
+  data: { turbo: false }, 
+  html: { authenticity_token: true },
+  local: true do |f| %>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     
-    <!-- Address Inputs -->
-    <div class="mb-4">
-      <%= label_tag :address, "Shipping Address", class: "block font-medium" %>
-      <%= text_field_tag :address, nil, class: "border rounded w-full p-2" %>
+    <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div class="mb-4">
+        <%= f.label :shipping_address, "Street Address", class: "block font-medium" %>
+        <%= f.text_field :shipping_address, class: "border rounded w-full p-2", placeholder: "123 Main St" %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :shipping_city, "City", class: "block font-medium" %>
+        <%= f.text_field :shipping_city, class: "border rounded w-full p-2", placeholder: "Vancouver" %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :shipping_postal_code, "Postal Code", class: "block font-medium" %>
+        <%= f.text_field :shipping_postal_code, class: "border rounded w-full p-2", placeholder: "A1A 1A1" %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :province_id, "Province", class: "block font-medium" %>
+        <%= f.collection_select :province_id, Province.all, :id, :name, 
+            {}, 
+            { class: "border rounded w-full p-2",
+              data: { 
+                tax_calculation_target: "province",
+                action: "change->tax-calculation#updateTaxes"
+              }
+            } %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :country, "Country", class: "block font-medium" %>
+        <%= f.text_field :country, class: "border rounded w-full p-2", value: "Canada", readonly: true %>
+      </div>
     </div>
-
-    <div class="mb-4">
-      <%= label_tag :province_id, "Province", class: "block font-medium" %>
-      <%= collection_select(:order, :province_id, Province.all, :id, :name, {}, class: "border rounded w-full p-2") %>
-    </div>
-
+    
+    <%= f.hidden_field :shipping_cost, value: "10.00" %>
+    
+    <!-- Email field if user is not signed in -->
+    <% unless user_signed_in? %>
+      <div class="mb-4">
+        <%= f.label :email, "Email", class: "block font-medium" %>
+        <%= f.email_field :email, class: "border rounded w-full p-2", required: true %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :email_confirmation, "Confirm Email", class: "block font-medium" %>
+        <%= f.email_field :email_confirmation, class: "border rounded w-full p-2", required: true %>
+      </div>
+    <% end %>
+    
     <!-- Invoice Summary -->
     <h2 class="text-xl font-semibold mt-6 mb-2">Invoice Summary</h2>
     <ul class="mb-4">
-      <% subtotal = @cart.cart_items.sum { |item| item.product.price * item.quantity } %>
-      <% pst = @province&.pst || 0 %>
-      <% gst = @province&.gst || 0 %>
-      <% hst = @province&.hst || 0 %>
-      <% total_tax = subtotal * (pst + gst + hst) %>
-      <% total = subtotal + total_tax %>
-
-      <li>Subtotal: $<%= '%.2f' % subtotal %></li>
-      <li>PST: $<%= '%.2f' % (subtotal * pst) %></li>
-      <li>GST: $<%= '%.2f' % (subtotal * gst) %></li>
-      <li>HST: $<%= '%.2f' % (subtotal * hst) %></li>
-      <li><strong>Total: $<%= '%.2f' % total %></strong></li>
+      <% subtotal = @current_cart.cart_items.sum { |item| item.product.price * item.quantity } %>
+      <% shipping_cost = 10.00 %>
+      
+      <li class="flex justify-between">
+        <span>Subtotal:</span>
+        <span data-tax-calculation-target="subtotal" data-value="<%= subtotal %>">$<%= '%.2f' % subtotal %></span>
+      </li>
+      
+      <li class="flex justify-between">
+        <span>Shipping:</span>
+        <span>$<%= '%.2f' % shipping_cost %></span>
+      </li>
+      
+      <li class="flex justify-between">
+        <span>PST (<%= @province&.pst %>%):</span>
+        <span data-tax-calculation-target="pst">$<%= '%.2f' % (@pst_amount || 0) %></span>
+      </li>
+      
+      <li class="flex justify-between">
+        <span>GST (<%= @province&.gst %>%):</span>
+        <span data-tax-calculation-target="gst">$<%= '%.2f' % (@gst_amount || 0) %></span>
+      </li>
+      
+      <li class="flex justify-between">
+        <span>HST (<%= @province&.hst %>%):</span>
+        <span data-tax-calculation-target="hst">$<%= '%.2f' % (@hst_amount || 0) %></span>
+      </li>
+      
+      <li class="flex justify-between font-bold border-t pt-2 mt-2">
+        <span>Total:</span>
+        <span data-tax-calculation-target="total">$<%= '%.2f' % ((@total || subtotal) + shipping_cost) %></span>
+      </li>
     </ul>
-
-    <%= f.submit "Place Order", class: "bg-blue-600 text-white p-3 rounded hover:bg-blue-700" %>
-
+    
+    <%= f.submit "Place Order", class: "bg-blue-600 text-white p-3 rounded hover:bg-blue-700 w-full" %>
   <% end %>
-<% else %>
-  <p>Your cart is empty.</p>
-<% end %>
+</div>
